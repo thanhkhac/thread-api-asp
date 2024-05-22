@@ -13,7 +13,7 @@ namespace thread_api_asp
             builder.Services.AddEndpointsApiExplorer();
             //SERVICE-ENTITY_SERVICE
             builder.Services.MyConfigureService();
-            builder.Services.MyConfigureJWT(builder.Configuration);
+            builder.Services.MyConfigureJwt(builder.Configuration);
             builder.Services.MyConfigureSwaggerAuthentication();
 
             //Commons
@@ -26,7 +26,7 @@ namespace thread_api_asp
             app.UseSwagger();
             app.UseSwaggerUI();
             app.MapControllers();
-            app.UseAuthentication();
+            app.UseAuthentication(); //Authentication phải luôn đứng trước Authorization
             app.UseAuthorization();
             app.UseHttpsRedirection();
 

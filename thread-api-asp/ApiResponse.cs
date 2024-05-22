@@ -1,15 +1,9 @@
 ﻿namespace thread_api_asp
 {
-    public class ApiResponse
+    public class ApiResponse(object? @object, bool isOk)
     {
-        public object? Object { get; set; }
-        public bool IsOk { get; set; }
-
-        public ApiResponse(object? @object, bool isOk)
-        {
-            this.Object = @object;
-            IsOk = isOk;
-        }
+        public object? Object { get; set; } = @object;
+        public bool IsOk { get; set; } = isOk;
 
         public static ApiResponse Ok(object? @object)
         {

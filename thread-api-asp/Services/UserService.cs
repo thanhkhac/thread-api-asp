@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using thread_api_asp.Commons;
 using thread_api_asp.Models;
 using thread_api_asp.ViewModels;
 
@@ -56,7 +57,7 @@ namespace thread_api_asp.Services
                 Roles = roleService.GetDefaultRoles()
             };
             context.Users.Add(user);
-            return DbHelper.DbHelper.SaveChangeHandleError(context);
+            return DbHelper.SaveChangeHandleError(context);
         }
     }
 }

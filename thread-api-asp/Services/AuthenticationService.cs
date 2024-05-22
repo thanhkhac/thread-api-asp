@@ -58,11 +58,9 @@ namespace thread_api_asp.Services
         private string GenerateRefreshToken ()
         {
             var random = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(random);
-                return Convert.ToBase64String(random);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(random);
+            return Convert.ToBase64String(random);
         }
 
         #endregion
