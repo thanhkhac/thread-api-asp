@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\thread-api-asp.props" />
+</Project>
