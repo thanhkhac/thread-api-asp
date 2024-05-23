@@ -1,9 +1,8 @@
-﻿using thread_api_asp.Commons;
-using thread_api_asp.Models;
+﻿using thread_api_asp.Entities;
 
-namespace thread_api_asp.DbHelper
+namespace thread_api_asp.Commons
 {
-    public class DbHelper
+    public static class DbHelper
     {
         public static string SaveChangeHandleError(ThreadsContext context)
         {

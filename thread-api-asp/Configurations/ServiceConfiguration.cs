@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using thread_api_asp.Models;
+using thread_api_asp.Entities;
 using thread_api_asp.Services;
 
 namespace thread_api_asp.Configurations
@@ -17,7 +17,7 @@ namespace thread_api_asp.Configurations
             services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 
-        public static void MyConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+        public static void MyConfigureJwt(this IServiceCollection services, IConfiguration configuration)
         {
             var secretKey = configuration["JwtSettings:SecretKey"];
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
@@ -25,10 +25,10 @@ namespace thread_api_asp.Configurations
                 {
                     option.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false,
+                        ValidateIssuer = false, 
                         ValidateAudience = false,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? throw new InvalidOperationException())),
                         ClockSkew = TimeSpan.Zero //Độ lệch thời gian cho token
                     };
                 }

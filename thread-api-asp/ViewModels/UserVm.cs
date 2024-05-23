@@ -6,8 +6,8 @@ namespace thread_api_asp.ViewModels
     //public string Id { get; set; } = ""!; Giá trị mặc định khi khởi tạo sẽ là ""
     public class UserVm
     {
-        public string Id { get; set; } = ""!;
-        public string Username { get; set; } = ""!;
+        public string Id { get; set; } = null!;
+        public string Username { get; set; } = null!;
     }
 
     public class UserLoginVm
@@ -21,9 +21,9 @@ namespace thread_api_asp.ViewModels
     public class UserInsertVm
     {
         [Required]
-        public string? UserName { get; init; }
+        public required string UserName { get; init; }
         [Required]
-        public string? Password { get; init; }
+        public required string Password { get; init; }
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Mật khẩu không khớp")]
         public string? ConfirmPassword { get; init; }
