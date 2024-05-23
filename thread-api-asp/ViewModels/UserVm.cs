@@ -6,8 +6,8 @@ namespace thread_api_asp.ViewModels
     //public string Id { get; set; } = ""!; Giá trị mặc định khi khởi tạo sẽ là ""
     public class UserVm
     {
-        public string? Id { get; set; } 
-        public string? Username { get; set; } 
+        public string Id { get; set; } = null!;
+        public string Username { get; set; } = null!;
     }
 
     public class UserLoginVm

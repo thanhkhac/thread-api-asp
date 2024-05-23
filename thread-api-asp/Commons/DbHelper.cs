@@ -1,4 +1,4 @@
-﻿using thread_api_asp.Models;
+﻿using thread_api_asp.Entities;
 
 namespace thread_api_asp.Commons
 {

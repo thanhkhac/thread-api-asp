@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using thread_api_asp.Models;
+using thread_api_asp.Entities;
 using thread_api_asp.Services;
 
 namespace thread_api_asp.Configurations
@@ -25,7 +25,7 @@ namespace thread_api_asp.Configurations
                 {
                     option.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = false,
+                        ValidateIssuer = false, 
                         ValidateAudience = false,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? throw new InvalidOperationException())),

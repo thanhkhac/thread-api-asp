@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace thread_api_asp.Models;
+namespace thread_api_asp.Entities;
 
 [Table("refresh_token")]
 public partial class RefreshToken
@@ -20,11 +20,11 @@ public partial class RefreshToken
 
     [Column("token")]
     [StringLength(5000)]
-    public string? Token { get; set; }
+    public string Token { get; set; } = null!;
 
     [Column("jwt_id")]
     [StringLength(100)]
-    public string? JwtId { get; set; }
+    public string JwtId { get; set; } = null!;
 
     [Column("is_revoked")]
     public bool? IsRevoked { get; set; }

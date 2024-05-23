@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
-namespace thread_api_asp.Models;
+namespace thread_api_asp.Entities;
 
 public partial class ThreadsContext : DbContext
 {

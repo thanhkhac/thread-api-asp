@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace thread_api_asp.Models;
+namespace thread_api_asp.Entities;
 
 [Table("roles")]
 [Index("Prefix", Name = "roles_unique", IsUnique = true)]
