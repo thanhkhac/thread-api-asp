@@ -1,39 +1,40 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Dynamic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using thread_api_asp.Commons;
 using thread_api_asp.Configurations;
 using thread_api_asp.Entities;
+using thread_api_asp.Errors;
+using thread_api_asp.Repository;
 using thread_api_asp.ViewModels;
 
 namespace thread_api_asp.Services
 {
     public interface IAuthenticationService
     {
-        public string Login(UserLoginVm input, out TokenVm? result);
-        public string RenewToken(TokenVm input, out TokenVm? newToken);
+        public string Login(UserLoginVm input, out TokenVm? tokenVm);
+        public TokenVm? RefreshToken(TokenVm input);
     }
 
     public class AuthenticationService(
         ThreadsContext context,
-        IUserService userService,
+        IUserRepository userRepository,
+        IRefreshTokenRepository refreshTokenRepository,
         IOptionsMonitor<JwtSettings> jwtSettings) : IAuthenticationService
     {
-        public string Login(UserLoginVm input, out TokenVm? result)
+        public string Login(UserLoginVm input, out TokenVm? tokenVm)
         {
-            result = null;
-            userService.GetUserByUsernameAndPassword(input, out object? output);
-            if (output == null) return "Đăng nhập không thành công";
-            return GenerateToken((UserVm)output, out result);
+            tokenVm = null;
+            var user = userRepository.GetUserByUsernameAndPassword(input);
+            if (user == null) return ("Đăng nhập không thành công");
+            tokenVm = GenerateToken(new UserVm { Id = user.Id, Username = user.Username });
+            return string.Empty;
         }
 
-        public string RenewToken(TokenVm input, out TokenVm? newToken)
+        public TokenVm? RefreshToken(TokenVm input)
         {
-            newToken = null;
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKeyBytes = Encoding.UTF8.GetBytes(jwtSettings.CurrentValue.SecretKey);
             var nonValidateLifeTime = new TokenValidationParameters
@@ -44,55 +45,43 @@ namespace thread_api_asp.Services
                 IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
                 ClockSkew = TimeSpan.Zero,
             };
-            var refreshTk = GetRefreshToken(input.RefreshToken);
-            if (refreshTk == null) { return "Refresh token không tồn tại"; }
+            var refreshTk = refreshTokenRepository.GetRefreshToken(input.RefreshToken);
+            if (refreshTk == null) { throw new MessageException("Refresh token không tồn tại"); }
             try
             {
                 //Check 1: Kiểm tra access token có đúng định dạng và đã hết hạn chưa, nếu có thì sẽ throw lỗi
-                var tokenInVerification = jwtTokenHandler.ValidateToken(input.AccessToken, nonValidateLifeTime, out var validatedAccessToken);
+                jwtTokenHandler.ValidateToken(input.AccessToken, nonValidateLifeTime, out var validatedAccessToken);
                 //Check 2: Kiểm tra thuật toán có khớp hay không
                 if (validatedAccessToken is JwtSecurityToken token)
                 {
                     if (!token.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
-                        return "Không đúng thuật toán";
-                    if (!refreshTk.JwtId.Equals(token.Id)) return "JWT ID của Access token không khớp";
+                        throw new MessageException("Không đúng thuật toán");
+                    if (!refreshTk.JwtId.Equals(token.Id)) throw new MessageException("JWT ID của Access token không khớp");
                 }
             }
             catch (SecurityTokenExpiredException)
             {
-                if (refreshTk.IsRevoked == true) return "Refresh token đã bị thu hồi";
-                if (refreshTk.IsUsed == true) return "Refresh token đã được sử dụng";
-                if (refreshTk.ExpiredAt < DateTime.Now) return "Refresh token đã hết hạn";
+                if (refreshTk.IsRevoked == true) throw new MessageException("Refresh token đã bị thu hồi");
+                if (refreshTk.IsUsed == true) throw new MessageException("Refresh token đã được sử dụng");
+                if (refreshTk.ExpiredAt < DateTime.Now) throw new MessageException("Refresh token đã hết hạn");
                 //Renew token:
                 refreshTk.IsRevoked = true;
                 refreshTk.IsUsed = true;
-                context.RefreshTokens.Update(refreshTk);
+                refreshTokenRepository.Update(refreshTk);
                 var user = context.Users.SingleOrDefault(x => x.Id == refreshTk.UserId);
-                if (user != null)
-                {
-                    GenerateToken(new UserVm { Id = user.Id, Username = user.Username }, out newToken); 
-                    return string.Empty;
-                }
+                if (user == null) throw new MessageException("Người dùng không tồn tại");
+                return GenerateToken(new UserVm { Id = user.Id, Username = user.Username });
             }
-            catch (Exception e) { return ("Sai định dạng token"); }
-            return "Token chưa hết hạn";
+            catch (MessageException) { throw; }
+            catch (Exception) { throw new MessageException(ErrorConstants.CommonError); }
+            throw new MessageException("Refresh token chưa hết hạn");
         }
 
-        private RefreshToken? GetRefreshToken(string? accessToken)
-        {
-            var result = (
-                from atk in context.RefreshTokens
-                where
-                    atk.Token == accessToken
-                select atk).FirstOrDefault();
-            return result;
-        }
 
         #region Helper
 
-        private string GenerateToken(UserVm userVm, out TokenVm? output)
+        private TokenVm? GenerateToken(UserVm userVm)
         {
-            output = null;
             //Chuyển secret key thành byte để mã hóa
             var secretKeyBytes = Encoding.UTF8.GetBytes(jwtSettings.CurrentValue.SecretKey);
             //Tạo thông tin JWT (Json Web Token)
@@ -126,16 +115,13 @@ namespace thread_api_asp.Services
                 IssuedAt = DateTime.Now,
                 ExpiredAt = DateTime.Now.AddHours(1)
             };
-            context.RefreshTokens.Add(refreshTokenEntity);
-            string msg = DbHelper.SaveChangeHandleError(context);
-            if (msg.Length > 0) { return msg; }
+            refreshTokenRepository.Add(refreshTokenEntity);
             //Trả về thông tin token
-            output = new TokenVm
+            return new TokenVm
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
-            return string.Empty;
         }
 
         private string GenerateRefreshToken()

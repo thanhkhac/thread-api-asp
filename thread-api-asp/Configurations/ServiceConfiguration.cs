@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using thread_api_asp.Entities;
+using thread_api_asp.Repository;
 using thread_api_asp.Services;
 
 namespace thread_api_asp.Configurations
@@ -12,9 +13,15 @@ namespace thread_api_asp.Configurations
         public static void MyConfigureService(this IServiceCollection services)
         {
             services.AddDbContext<ThreadsContext>();
+            //Service Layer
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            
+            //Repository Layer
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            
         }
 
         public static void MyConfigureJwt(this IServiceCollection services, IConfiguration configuration)

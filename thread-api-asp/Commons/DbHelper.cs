@@ -7,7 +7,11 @@ namespace thread_api_asp.Commons
         public static string SaveChangeHandleError(ThreadsContext context)
         {
             try { context.SaveChanges(); }
-            catch (Exception e) { return e.Message; }
+            catch (Exception e)
+            {
+                context.Dispose();
+                return e.Message;
+            }
             return string.Empty;
         }
     }
