@@ -1,12 +1,13 @@
 ﻿using thread_api_asp.Entities;
 
-namespace thread_api_asp.Services
+namespace thread_api_asp.Repository
 {
-    public interface IRoleService
+    public interface IRoleRepository
     {
         public List<Role> GetDefaultRoles();
     }
-    public class RoleService(ThreadsContext context) : IRoleService
+
+    public class RoleRepository(ThreadsContext context)
     {
         public List<Role> GetDefaultRoles() => context.Roles.Where(x => x.IsDefault == true).ToList();
     }

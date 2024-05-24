@@ -28,7 +28,7 @@ namespace thread_api_asp.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        public ApiResponse RefreshToken(TokenVm input)
+        public ApiResponse RefreshToken(TokenLoginVm input)
         {
             var status = authenticationService.RefreshToken(input, out TokenVm? output);
             return status.IsOk ? ApiResponse.OkMessage(output, status.Message) : ApiResponse.ErrorMessage(output, status.Message);

@@ -15,7 +15,6 @@ namespace thread_api_asp.Configurations
             services.AddDbContext<ThreadsContext>();
             //Service Layer
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             
             //Repository Layer

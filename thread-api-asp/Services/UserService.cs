@@ -10,7 +10,9 @@ namespace thread_api_asp.Services
         public ServiceResult InsertUser(UserInsertVm input);
     }
 
-    public class UserService(IUserRepository userRepository, IRoleService roleService) : IUserService
+    public class UserService(
+        IUserRepository userRepository,
+        IRoleRepository roleRepository) : IUserService
     {
 
         public ServiceResult InsertUser(UserInsertVm input)
@@ -24,7 +26,7 @@ namespace thread_api_asp.Services
                     Id = Guid.NewGuid().ToString(),
                     Username = input.UserName,
                     Password = input.Password,
-                    Roles = roleService.GetDefaultRoles()
+                    Roles = roleRepository.GetDefaultRoles()
                 };
                 userRepository.Add(user);
                 return ServiceResult.Ok("Tạo tài khoản thành công");

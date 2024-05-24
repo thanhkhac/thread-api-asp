@@ -15,7 +15,7 @@ namespace thread_api_asp.Services
     public interface IAuthenticationService
     {
         public ServiceResult Login(UserLoginVm input, out TokenVm? tokenVm);
-        public ServiceResult RefreshToken(TokenVm input, out TokenVm? output);
+        public ServiceResult RefreshToken(TokenLoginVm input, out TokenVm? output);
     }
 
     public class AuthenticationService(
@@ -34,7 +34,7 @@ namespace thread_api_asp.Services
             return ServiceResult.Ok("Đăng nhập thành công");
         }
 
-        public ServiceResult RefreshToken(TokenVm input, out TokenVm? output)
+        public ServiceResult RefreshToken(TokenLoginVm input, out TokenVm? output)
         {
             output = null;
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -86,7 +86,7 @@ namespace thread_api_asp.Services
 
         #region Helper
 
-        private TokenVm? GenerateToken(UserVm userVm)
+        private TokenVm GenerateToken(UserVm userVm)
         {
             //Chuyển secret key thành byte để mã hóa
             var secretKeyBytes = Encoding.UTF8.GetBytes(jwtSettings.CurrentValue.SecretKey);
