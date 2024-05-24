@@ -7,7 +7,7 @@ namespace thread_api_asp.Repository
         public List<Role> GetDefaultRoles();
     }
 
-    public class RoleRepository(ThreadsContext context)
+    public class RoleRepository(ThreadsContext context) : IRoleRepository
     {
         public List<Role> GetDefaultRoles() => context.Roles.Where(x => x.IsDefault == true).ToList();
     }

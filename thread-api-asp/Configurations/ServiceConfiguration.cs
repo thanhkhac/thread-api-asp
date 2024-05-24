@@ -20,6 +20,7 @@ namespace thread_api_asp.Configurations
             //Repository Layer
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             
         }
 

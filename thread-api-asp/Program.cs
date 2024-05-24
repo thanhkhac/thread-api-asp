@@ -6,6 +6,7 @@ namespace thread_api_asp
     {
         public static void Main(string[] args)
         {
+        
             var builder = WebApplication.CreateBuilder(args);
             //SERVICE
             builder.Services.AddControllers();
