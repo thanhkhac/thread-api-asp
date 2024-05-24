@@ -4,3 +4,5 @@
 /thread-api-asp/obj
 /thread-api-asp/bin/Debug
 /thread-api-asp/bin/Debug/net8.0
+/AccessToken_RefreshToken/bin
+/AccessToken_RefreshToken/obj
