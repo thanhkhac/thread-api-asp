@@ -13,9 +13,9 @@ namespace thread_api_asp.ViewModels
     public class UserLoginVm
     {
         [Required]
-        public string? UserName { get; init; }
+        public string UserName { get; init; } = null!;
         [Required]
-        public string? Password { get; init; }
+        public string Password { get; init; } = null!;
     }
 
     public class UserInsertVm

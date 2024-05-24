@@ -1,23 +1,34 @@
 ﻿namespace thread_api_asp
 {
-    public class Result
+    public class ApiResponse
     {
         public string? Message { get; set; }
         public object? Data { get; set; }
         public bool IsOk { get; set; }
 
-        public static Result OkMessage(object? data, string message)
+        public static ApiResponse OkMessage(object? data, string message)
         {
-            return new Result
+            return new ApiResponse
             {
                 Message = message,
                 Data = data,
                 IsOk = true
             };
         }
-        public static Result Ok(object? data)
+
+        public static ApiResponse OkMessage(string message)
         {
-            return new Result
+            return new ApiResponse
+            {
+                Message = message,
+                Data = null,
+                IsOk = true
+            };
+        }
+
+        public static ApiResponse Ok(object? data)
+        {
+            return new ApiResponse
             {
                 Message = null,
                 Data = data,
@@ -25,25 +36,25 @@
             };
         }
 
-        public static Result Ok()
+        public static ApiResponse Ok()
         {
-            return new Result
+            return new ApiResponse
             {
                 IsOk = true
             };
         }
-        public static Result Error()
+        public static ApiResponse Error()
         {
-            return new Result
+            return new ApiResponse
             {
                 IsOk = false
             };
         }
 
 
-        public static Result Error(object? data)
+        public static ApiResponse Error(object? data)
         {
-            return new Result
+            return new ApiResponse
             {
                 Message = null,
                 Data = data,
@@ -51,25 +62,26 @@
             };
         }
 
-        public static Result ErrorMessage(string message)
+        public static ApiResponse ErrorMessage(string message)
         {
-            return new Result
+            return new ApiResponse
             {
                 Message = message,
                 Data = null,
                 IsOk = false
             };
         }
-        
-        public static Result ErrorMessage(object? data, string message)
+
+        public static ApiResponse ErrorMessage(object? data, string message)
         {
-            return new Result
+            return new ApiResponse
             {
                 Message = message,
                 Data = data,
                 IsOk = false
             };
         }
+
 
 
     }

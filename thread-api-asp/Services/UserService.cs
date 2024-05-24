@@ -7,18 +7,18 @@ namespace thread_api_asp.Services
 {
     public interface IUserService
     {
-        public string InsertUser(UserInsertVm input);
+        public ServiceResult InsertUser(UserInsertVm input);
     }
 
     public class UserService(IUserRepository userRepository, IRoleService roleService) : IUserService
     {
 
-        public string InsertUser(UserInsertVm input)
+        public ServiceResult InsertUser(UserInsertVm input)
         {
             try
             {
                 var existUser = userRepository.GetUserByUsername(input.UserName);
-                if (existUser != null) return "Username này đã tồn tại";
+                if (existUser != null) ServiceResult.Error("Username này đã tồn tại");
                 var user = new User
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -27,12 +27,12 @@ namespace thread_api_asp.Services
                     Roles = roleService.GetDefaultRoles()
                 };
                 userRepository.Add(user);
-                return string.Empty;
+                return ServiceResult.Ok("Tạo tài khoản thành công");
             }
             catch (Exception e)
             {
                 //Log lỗi tại đây
-                return ErrorConstants.CommonError;
+                return ServiceResult.Error(ErrorConstants.CommonError);
             }
         }
     }

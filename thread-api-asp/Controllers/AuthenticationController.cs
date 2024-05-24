@@ -12,45 +12,26 @@ namespace thread_api_asp.Controllers
     )
         : ControllerBase
     {
-        /// <summary>
-        /// Đăng nhập
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+
         [HttpPost("Login")]
-        public Result Login(UserLoginVm input)
+        public ApiResponse Login(UserLoginVm input)
         {
-            string msg = authenticationService.Login(input, out var output);
-            return output == null ? Result.ErrorMessage(msg) : Result.OkMessage(output, msg);
+            var status = authenticationService.Login(input, out var output);
+            return status.IsOk ? ApiResponse.OkMessage(output, status.Message) : ApiResponse.ErrorMessage(output, status.Message);
         }
 
-        /// <summary>
-        /// Đăng ký tài khoản mới
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         [HttpPost("Register")]
-        public Result Register(UserInsertVm input)
+        public ApiResponse Register(UserInsertVm input)
         {
-            string msg = userService.InsertUser(input);
-            if (msg != string.Empty) return Result.ErrorMessage(msg);
-            return Result.Ok();
+            var status = userService.InsertUser(input);
+            return status.IsOk ? ApiResponse.OkMessage(status.Message) : ApiResponse.ErrorMessage(status.Message);
         }
 
-        /// <summary>
-        /// Khởi tạo lại token cho người dùng
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         [HttpPost("RefreshToken")]
-        public Result RefreshToken(TokenVm input)
+        public ApiResponse RefreshToken(TokenVm input)
         {
-            try
-            {
-                var token = authenticationService.RefreshToken(input);
-                return Result.Ok(token);
-            }
-            catch (Exception e) { return Result.ErrorMessage(e.Message); }
+            var status = authenticationService.RefreshToken(input, out TokenVm? output);
+            return status.IsOk ? ApiResponse.OkMessage(output, status.Message) : ApiResponse.ErrorMessage(output, status.Message);
         }
 
     }

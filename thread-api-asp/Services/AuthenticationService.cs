@@ -14,8 +14,8 @@ namespace thread_api_asp.Services
 {
     public interface IAuthenticationService
     {
-        public string Login(UserLoginVm input, out TokenVm? tokenVm);
-        public TokenVm? RefreshToken(TokenVm input);
+        public ServiceResult Login(UserLoginVm input, out TokenVm? tokenVm);
+        public ServiceResult RefreshToken(TokenVm input, out TokenVm? output);
     }
 
     public class AuthenticationService(
@@ -24,17 +24,19 @@ namespace thread_api_asp.Services
         IRefreshTokenRepository refreshTokenRepository,
         IOptionsMonitor<JwtSettings> jwtSettings) : IAuthenticationService
     {
-        public string Login(UserLoginVm input, out TokenVm? tokenVm)
+        public ServiceResult Login(UserLoginVm input, out TokenVm? tokenVm)
         {
             tokenVm = null;
+            if (userRepository.GetUserByUsername(input.UserName) == null) return ServiceResult.Error("Tài khoản không tồn tại");
             var user = userRepository.GetUserByUsernameAndPassword(input);
-            if (user == null) return ("Đăng nhập không thành công");
+            if (user == null) return ServiceResult.Error("Tài khoản");
             tokenVm = GenerateToken(new UserVm { Id = user.Id, Username = user.Username });
-            return string.Empty;
+            return ServiceResult.Ok("Đăng nhập thành công");
         }
 
-        public TokenVm? RefreshToken(TokenVm input)
+        public ServiceResult RefreshToken(TokenVm input, out TokenVm? output)
         {
+            output = null;
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKeyBytes = Encoding.UTF8.GetBytes(jwtSettings.CurrentValue.SecretKey);
             var nonValidateLifeTime = new TokenValidationParameters
@@ -46,7 +48,7 @@ namespace thread_api_asp.Services
                 ClockSkew = TimeSpan.Zero,
             };
             var refreshTk = refreshTokenRepository.GetRefreshToken(input.RefreshToken);
-            if (refreshTk == null) { throw new MessageException("Refresh token không tồn tại"); }
+            if (refreshTk == null) { return ServiceResult.Error("Refresh token không tồn tại"); }
             try
             {
                 //Check 1: Kiểm tra access token có đúng định dạng và đã hết hạn chưa, nếu có thì sẽ throw lỗi
@@ -55,26 +57,30 @@ namespace thread_api_asp.Services
                 if (validatedAccessToken is JwtSecurityToken token)
                 {
                     if (!token.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
-                        throw new MessageException("Không đúng thuật toán");
-                    if (!refreshTk.JwtId.Equals(token.Id)) throw new MessageException("JWT ID của Access token không khớp");
+                        ServiceResult.Error("Không đúng thuật toán");
+                    if (!refreshTk.JwtId.Equals(token.Id)) ServiceResult.Error("JWT ID của Access token không khớp");
                 }
             }
             catch (SecurityTokenExpiredException)
             {
-                if (refreshTk.IsRevoked == true) throw new MessageException("Refresh token đã bị thu hồi");
-                if (refreshTk.IsUsed == true) throw new MessageException("Refresh token đã được sử dụng");
-                if (refreshTk.ExpiredAt < DateTime.Now) throw new MessageException("Refresh token đã hết hạn");
+                if (refreshTk.IsRevoked == true) return ServiceResult.Error("Refresh token đã bị thu hồi");
+                if (refreshTk.IsUsed == true) return ServiceResult.Error("Refresh token đã được sử dụng");
+                if (refreshTk.ExpiredAt < DateTime.Now) return ServiceResult.Error("Refresh token đã hết hạn");
                 //Renew token:
                 refreshTk.IsRevoked = true;
                 refreshTk.IsUsed = true;
                 refreshTokenRepository.Update(refreshTk);
                 var user = context.Users.SingleOrDefault(x => x.Id == refreshTk.UserId);
-                if (user == null) throw new MessageException("Người dùng không tồn tại");
-                return GenerateToken(new UserVm { Id = user.Id, Username = user.Username });
+                if (user == null) return ServiceResult.Error("Người dùng không tồn tại");
+                output = GenerateToken(new UserVm { Id = user.Id, Username = user.Username });
+                return ServiceResult.Ok("Gia hạn thành công");
             }
-            catch (MessageException) { throw; }
-            catch (Exception) { throw new MessageException(ErrorConstants.CommonError); }
-            throw new MessageException("Refresh token chưa hết hạn");
+            catch (Exception)
+            {
+                //Log lỗi tại đây
+                return ServiceResult.Error(ErrorConstants.CommonError);
+            }
+            return ServiceResult.Error("Refresh token chưa hết hạn");
         }
 
 
