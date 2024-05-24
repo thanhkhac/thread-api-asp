@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace thread_api_asp.Entities;
 
 [Table("refresh_token")]
+[Index("UserId", Name = "refresh_token_users_FK")]
 public partial class RefreshToken
 {
     [Key]
@@ -37,4 +38,8 @@ public partial class RefreshToken
 
     [Column("expired_at", TypeName = "datetime")]
     public DateTime? ExpiredAt { get; set; }
+
+    [ForeignKey("UserId")]
+    [InverseProperty("RefreshTokens")]
+    public virtual User? User { get; set; }
 }

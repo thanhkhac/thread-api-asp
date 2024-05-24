@@ -33,6 +33,9 @@ public partial class User
     [Column("update_at", TypeName = "timestamp")]
     public DateTime? UpdateAt { get; set; }
 
+    [InverseProperty("User")]
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();

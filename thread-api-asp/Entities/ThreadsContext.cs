@@ -30,6 +30,8 @@ public partial class ThreadsContext : DbContext
         modelBuilder.Entity<RefreshToken>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RefreshTokens).HasConstraintName("refresh_token_users_FK");
         });
 
         modelBuilder.Entity<Role>(entity =>
