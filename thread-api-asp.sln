@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccessToken_RefreshToken", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "Base\Base.csproj", "{7430691C-EA5F-46A2-A5F4-56B781D095F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identity.csproj", "{09833EAA-FEA4-4A74-8F17-2CCE58B88ECC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7430691C-EA5F-46A2-A5F4-56B781D095F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7430691C-EA5F-46A2-A5F4-56B781D095F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7430691C-EA5F-46A2-A5F4-56B781D095F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09833EAA-FEA4-4A74-8F17-2CCE58B88ECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09833EAA-FEA4-4A74-8F17-2CCE58B88ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09833EAA-FEA4-4A74-8F17-2CCE58B88ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09833EAA-FEA4-4A74-8F17-2CCE58B88ECC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

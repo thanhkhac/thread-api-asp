@@ -11,3 +11,5 @@
 /Base/obj
 /AccessToken_RefreshToken/obj
 /.idea
+/Identity/bin
+/Identity/obj
