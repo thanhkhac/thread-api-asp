@@ -40,12 +40,11 @@ namespace Identity.Configurations
                     option.Password.RequireLowercase = false;
                 }
             ).AddEntityFrameworkStores<MyIdentityDbContext>().AddDefaultTokenProviders();
-            
-            
         }
 
         public static void ConfigAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var secretKey = configuration["JwtSettings:SecretKey"];
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -61,13 +60,25 @@ namespace Identity.Configurations
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes("NguyenKhacThanhNguyenKhacThanhNguyenKhacThanhNguyenKhacThanhNguyenKhacThanhNguyenKhacThanh")),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? throw new InvalidOperationException())),
                         ClockSkew = TimeSpan.Zero //Độ lệch thời gian cho token
                     };
                 }
             );
+            // 
+            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+            //     option =>
+            //     {
+            //         option.TokenValidationParameters = new TokenValidationParameters
+            //         {
+            //             ValidateIssuer = false, 
+            //             ValidateAudience = false,
+            //             ValidateIssuerSigningKey = true,
+            //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? throw new InvalidOperationException())),
+            //             ClockSkew = TimeSpan.Zero //Độ lệch thời gian cho token
+            //         };
+            //     }
+            // );
         }
 
         public static void ConfigSwagger(this IServiceCollection services)
@@ -78,7 +89,7 @@ namespace Identity.Configurations
                 {
                     Name = "Authorization",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });

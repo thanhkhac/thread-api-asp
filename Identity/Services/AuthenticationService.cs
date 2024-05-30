@@ -34,7 +34,7 @@ namespace Identity.Services
             };
             result = userManager.CreateAsync(user, input.Password).Result;
             if (!result.Succeeded) return ServiceResult.Ok("Create account successfully");
-            return ServiceResult.Error(result.Errors.First().Description);
+            return ServiceResult.Error(result.Errors.FirstOrDefault()?.Description);
         }
         public ServiceResult SignIn(SignInVm input, out TokenVm? result)
         {
@@ -43,6 +43,7 @@ namespace Identity.Services
             if (signInResult.IsLockedOut) return ServiceResult.Ok("Your account has been locked");
             if (!signInResult.Succeeded) return ServiceResult.Ok("Sign in failed");
             var user = userManager.FindByEmailAsync(input.UserName).Result;
+            if(user == null) user = userManager.FindByNameAsync(input.UserName).Result;
             if (user == null) return ServiceResult.Error("Your account isn't existed");
             result = GenerateToken(user);
             return ServiceResult.Ok("Đăng nhập thành công");
@@ -95,10 +96,13 @@ namespace Identity.Services
 
         private string GenerateRefreshToken()
         {
+            //Khởi tạo một mảng byte với 32 ô
             var random = new byte[32];
+            //Khởi tạo một biến "Tạo số ngẫu nhiên"
             using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(random);
-            return Convert.ToBase64String(random);
+            rng.GetBytes(random); //Điền vào các ô của array bằng các byte ngẫu nhiên
+            //Trả về chuỗi random được mã hóa về base 64
+            return Convert.ToBase64String(random) + Guid.NewGuid(); 
         }
     }
 }

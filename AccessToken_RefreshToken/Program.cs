@@ -1,4 +1,5 @@
 using thread_api_asp.Configurations;
+using thread_api_asp.Entities;
 
 namespace thread_api_asp
 {
@@ -30,7 +31,7 @@ namespace thread_api_asp
             app.UseAuthentication(); //Authentication phải luôn đứng trước Authorization
             app.UseAuthorization();
             app.UseHttpsRedirection();
-
+            app.MapIdentityApi<User>();
             //RUN
             app.Run();
         }

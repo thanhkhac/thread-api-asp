@@ -16,6 +16,7 @@ public class Program
         builder.Services.AddAuthorization();
         builder.Services.ConfigDb(builder.Configuration); //SERVICES
         builder.Services.ConfigIdentity(); // IDENTITY
+        builder.Services.ConfigAuthentication(builder.Configuration);
         builder.Services.AddServices();
         //BUILD
         var app = builder.Build();
