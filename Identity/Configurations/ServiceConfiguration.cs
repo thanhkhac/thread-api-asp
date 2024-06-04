@@ -1,12 +1,11 @@
-﻿using System.Configuration;
-using System.Text;
+﻿using System.Text;
 using Identity.Entities;
 using Identity.Repositories;
 using Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -38,9 +37,19 @@ namespace Identity.Configurations
                     option.Password.RequireDigit = false;
                     option.Password.RequiredLength = 6;
                     option.Password.RequireLowercase = false;
+                    // option.SignIn.RequireConfirmedEmail = true;
+                    // option.SignIn.RequireConfirmedAccount = true;
                 }
             ).AddEntityFrameworkStores<MyIdentityDbContext>().AddDefaultTokenProviders();
         }
+        public static void ConfigAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("hello", policy => policy.RequireClaim("policy", "hello"));
+            });
+        }
+
 
         public static void ConfigAuthentication(this IServiceCollection services, IConfiguration configuration)
         {

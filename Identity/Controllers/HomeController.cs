@@ -7,8 +7,8 @@ namespace Identity.Controllers
     [Route("[controller]")]
     public class HomeController : Controller
     {
-        [HttpGet("Hello")]
-        [Authorize]
+        [HttpGet("hello")]
+        [Authorize(Policy = "hello")]
         public IActionResult Get()
         {
             return Ok("Ok");

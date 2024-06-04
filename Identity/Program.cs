@@ -13,10 +13,10 @@ public class Program
         builder.Services.ConfigSwagger(); // SWAGGER
         builder.Services.AddEndpointsApiExplorer(); 
         builder.Services.AddControllers();
-        builder.Services.AddAuthorization();
         builder.Services.ConfigDb(builder.Configuration); //SERVICES
         builder.Services.ConfigIdentity(); // IDENTITY
         builder.Services.ConfigAuthentication(builder.Configuration);
+        builder.Services.ConfigAuthorization();
         builder.Services.AddServices();
         //BUILD
         var app = builder.Build();

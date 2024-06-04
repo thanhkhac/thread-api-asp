@@ -17,10 +17,17 @@ namespace Identity.Controllers
             return status.IsOk ? ApiResponse.OkMessage(output, status.Message) : ApiResponse.ErrorMessage(output, status.Message);
         }
         
-        [HttpPost("SignIn")]
-        public ApiResponse SignIn(SignInVm input)
+        [HttpPost("Login")]
+        public ApiResponse Login(LoginVm input)
         {
-            var status = authenticationService.SignIn(input, out TokenVm? output);
+            var status = authenticationService.Login(input, out TokenVm? output);
+            return status.IsOk ? ApiResponse.OkMessage(output, status.Message) : ApiResponse.ErrorMessage(output, status.Message);
+        }
+        
+        [HttpPost("Refresh")]
+        public ApiResponse Refresh(RefreshTokenVm input)
+        {
+            var status = authenticationService.RefreshToken(input, out TokenVm? output);
             return status.IsOk ? ApiResponse.OkMessage(output, status.Message) : ApiResponse.ErrorMessage(output, status.Message);
         }
     }

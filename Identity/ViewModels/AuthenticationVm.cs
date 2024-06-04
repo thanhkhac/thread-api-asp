@@ -14,7 +14,7 @@ namespace Identity.ViewModels
         public string ConfirmPassword { get; set; } = null!;
      }
      
-     public class SignInVm
+     public class LoginVm
      {
          [Required]
          public string UserName { get; set; } = null!;
