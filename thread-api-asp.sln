@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Identity\Identi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LamdaExpression", "LamdaExpression\LamdaExpression.csproj", "{5DA62567-0271-443A-BE59-9C11D6FACB4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insthread-MVC", "Insthread-MVC\Insthread-MVC.csproj", "{C5B363B5-B81D-4D88-A854-11A00C9B431C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5DA62567-0271-443A-BE59-9C11D6FACB4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DA62567-0271-443A-BE59-9C11D6FACB4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DA62567-0271-443A-BE59-9C11D6FACB4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5B363B5-B81D-4D88-A854-11A00C9B431C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5B363B5-B81D-4D88-A854-11A00C9B431C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5B363B5-B81D-4D88-A854-11A00C9B431C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5B363B5-B81D-4D88-A854-11A00C9B431C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
